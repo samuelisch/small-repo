@@ -1,0 +1,80 @@
+.pnpm-store/
+.sass-cache/
+node_modules/
+.env
+.vagrant/
+.idea
+.venv
+.java-version
+*.iml
+*.ipr
+*.iws
+target/
+*/.idea
+*.jar
+*.class
+*.py[c|o]
+*~
+*.swp
+*.swo
+dataapi/logs
+*.coffee~
+*.js~
+*.arx
+adnauseam
+dependency-reduced-pom.xml
+.DS_Store
+.shipwright/
+*.egg-info
+.eggs/
+python/build/
+python/dist/
+scripts/metastore_db/
+scripts/insights
+.webassets-cache/
+jobs/.automation_env
+bazel-bin
+bazel-genfiles
+bazel-ntropy
+bazel-out
+bazel-testlogs
+
+webpack-stats.json
+*.sublime-workspace
+*/.remote-sync.json
+*.sqlite3
+zeniq-backend/myapp-all/mapapis/eloqua/.swagger-codegen-ignore
+
+.#*
+
+# Ignore Eclipse-generated files
+.classpath
+.project
+.settings
+
+# Ignore vscode settings files
+.vscode
+
+# ignore tags from vim plugin
+tags
+tags/*
+TAGS
+
+#ignore jupyter checkpints
+.ipynb_checkpoints
+
+.tmp-cache*
+/services/epsilon/swagger/
+
+# ignore files related to Spark unit testing
+spark-warehouse/
+metastore_db/
+derby.log
+
+# pre-commit logs
+services/campaigns/pre-commit.log
+
+.gradle/
+
+# ignore flink pipeline test outputs
+flink/src/test/resources/mpd_output/
