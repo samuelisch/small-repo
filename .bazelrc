@@ -16,5 +16,5 @@
 startup --host_jvm_args="-Xms256m" --host_jvm_args="-Xmx4096m" --max_idle_secs="3600"
 
 # Local, Jenkins, Aspect
-build --@aspect_rules_ts//ts:skipLibCheck=always
+build --@aspect_rules_ts//ts:skipLibCheck=honor_tsconfig
 build --action_env=BAZEL_BINDIR=.

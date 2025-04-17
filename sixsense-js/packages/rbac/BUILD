@@ -1,5 +1,3 @@
-exports_files(["tsconfig.json"])
-
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@npm//:defs.bzl", "npm_link_all_packages")
@@ -16,7 +14,7 @@ ts_project(
     declaration = True,
     validate = False,
     transpiler = 'tsc',
-    tsconfig = ":tsconfig.json",
+    tsconfig = "//sixsense-js/packages/rbac:tsconfig.json",
     out_dir = "lib",
     deps = [":node_modules"],
 )
