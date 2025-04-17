@@ -35,7 +35,7 @@ scripts/insights
 jobs/.automation_env
 bazel-bin
 bazel-genfiles
-bazel-ntropy
+bazel-small-repo
 bazel-out
 bazel-testlogs
 
