@@ -1,0 +1,20 @@
+# We have different bazelrc files for our different setups
+# .bazelrc for local development
+# .bazelrc_jenkins for Jenkins CI
+# .aspect/workflows/bazelrc for Aspect Workflows
+#
+# We have grouped the flags in all these files into sections
+# so that the ones common to across files are clearly identifiable
+# This makes it easier to maintain these flags across these files
+#
+# A different approach would be to use .bazelrc as the base configs
+# and use an override file for each environment. The only issue here is
+# that for local development, the developers would need to remember to
+# pass the override bazelrc. Hence we have chosen to keep distinctly
+# separate bazelrc files
+
+startup --host_jvm_args="-Xms256m" --host_jvm_args="-Xmx4096m" --max_idle_secs="3600"
+
+# Local, Jenkins, Aspect
+build --@aspect_rules_ts//ts:skipLibCheck=always
+build --action_env=BAZEL_BINDIR=.
