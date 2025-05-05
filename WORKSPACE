@@ -21,6 +21,32 @@ http_archive(
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 bazel_skylib_workspace()
 
+http_archive(
+    name = "com_google_protobuf",
+    strip_prefix = "protobuf-29.4",
+    sha256 = "6bd9dcc91b17ef25c26adf86db71c67ec02431dc92e9589eaf82e22889230496",
+    urls = [
+            "https://github.com/protocolbuffers/protobuf/releases/download/v29.4/protobuf-29.4.tar.gz",
+        ],
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+http_archive(
+    name = "rules_proto",
+    sha256 = "14a225870ab4e91869652cfd69ef2028277fc1dc4910d65d353b62d6e0ae21f4",
+    strip_prefix = "rules_proto-7.1.0",
+    url = "https://github.com/bazelbuild/rules_proto/releases/download/7.1.0/rules_proto-7.1.0.tar.gz",
+)
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
+rules_proto_dependencies()
+
+load("@rules_proto//proto:toolchains.bzl", "rules_proto_toolchains")
+rules_proto_toolchains()
+
 ########################################################################
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
@@ -122,32 +148,6 @@ load("@buildifier_prebuilt//:defs.bzl", "buildifier_prebuilt_register_toolchains
 buildifier_prebuilt_register_toolchains()
 
 http_archive(
-    name = "com_google_protobuf",
-    strip_prefix = "protobuf-29.3",
-    sha256 = "PTKUDpdcStm4umlkDnj1UnB1uuM8ookCdb8muFPAliw=",
-    urls = [
-            "https://github.com/protocolbuffers/protobuf/releases/download/v29.3/protobuf-29.3.tar.gz",
-        ],
-)
-
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
-
-protobuf_deps()
-
-http_archive(
-    name = "rules_proto",
-    sha256 = "14a225870ab4e91869652cfd69ef2028277fc1dc4910d65d353b62d6e0ae21f4",
-    strip_prefix = "rules_proto-7.1.0",
-    url = "https://github.com/bazelbuild/rules_proto/releases/download/7.1.0/rules_proto-7.1.0.tar.gz",
-)
-
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
-rules_proto_dependencies()
-
-load("@rules_proto//proto:toolchains.bzl", "rules_proto_toolchains")
-rules_proto_toolchains()
-
-http_archive(
     name = "io_bazel_rules_go",
     sha256 = "f2d15bea3e241aa0e3a90fb17a82e6a8ab12214789f6aeddd53b8d04316d2b7c",
     urls = [
@@ -160,7 +160,7 @@ load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_depe
 
 go_rules_dependencies()
 
-go_register_toolchains()
+go_register_toolchains("1.24.2")
 
 # we need to load both new and old rules_nodejs as the old one is incompatible with rules_js, and new one is incompatible with cubejs
 http_archive(
@@ -169,13 +169,6 @@ http_archive(
     strip_prefix = "rules_nodejs-6.3.4",
     url = "https://github.com/bazel-contrib/rules_nodejs/releases/download/v6.3.4/rules_nodejs-v6.3.4.tar.gz",
 )
-# http_archive(
-#     name = "build_bazel_rules_nodejs",
-#     sha256 = "e79c08a488cc5ac40981987d862c7320cee8741122a2649e9b08e850b6f20442",
-#     urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.8.0/rules_nodejs-3.8.0.tar.gz"],
-# )
-
-# # rules_js (dependencies: https://registry.build/github/aspect-build/rules_ts/)
 http_archive(
     name = "aspect_rules_js",
     sha256 = "1be1a3ec3d3baec4a71bc09ce446eb59bb48ae31af63016481df1532a0d81aee",
@@ -190,7 +183,7 @@ http_archive(
 )
 load("@aspect_rules_ts//ts:repositories.bzl", "rules_ts_dependencies")
 rules_ts_dependencies(
-    ts_version_from = "//:package.json",
+    ts_version_from = "//rbac:package.json",
 )
 
 load("@aspect_rules_js//js:repositories.bzl", "rules_js_dependencies")
@@ -202,7 +195,7 @@ load("@aspect_rules_js//npm:repositories.bzl", "npm_translate_lock")
 rules_js_register_toolchains()
 npm_translate_lock(
     name = "npm",
-    pnpm_lock = "//:pnpm-lock.yaml",
+    pnpm_lock = "//rbac:pnpm-lock.yaml",
 )
 load("@npm//:repositories.bzl", "npm_repositories")
 npm_repositories()
