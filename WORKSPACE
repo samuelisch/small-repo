@@ -1,5 +1,5 @@
 workspace(
-    name = "ntropy",
+    name = "small-repo",
 )
 
 
@@ -66,12 +66,93 @@ aspect_bazel_lib_register_toolchains()
 register_coreutils_toolchains()
 # aspect_bazel_lib end
 
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "bazel_features",
+    sha256 = "d852f389ce8db8b8c2f9807a4faf065b0d0ba302163898cd2428b6ca7d086681",
+    strip_prefix = "bazel_features-1.29.0",
+    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.29.0/bazel_features-v1.29.0.tar.gz",
+)
+load("@bazel_features//:deps.bzl", "bazel_features_deps")
+bazel_features_deps()
+
+http_archive(
+    name = "io_bazel_stardoc",
+    sha256 = "ca933f39f2a6e0ad392fa91fd662545afcbd36c05c62365538385d35a0323096",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/stardoc/releases/download/0.8.0/stardoc-0.8.0.tar.gz",
+        "https://github.com/bazelbuild/stardoc/releases/download/0.8.0/stardoc-0.8.0.tar.gz",
+    ],
+)
+
+load("@io_bazel_stardoc//:setup.bzl", "stardoc_repositories")
+
+stardoc_repositories()
+
+load("@io_bazel_stardoc//:deps.bzl", "stardoc_external_deps")
+
+stardoc_external_deps()
+
+http_archive(
+    name = "rules_shell",
+    sha256 = "3e114424a5c7e4fd43e0133cc6ecdfe54e45ae8affa14fadd839f29901424043",
+    strip_prefix = "rules_shell-0.4.0",
+    url = "https://github.com/bazelbuild/rules_shell/releases/download/v0.4.0/rules_shell-v0.4.0.tar.gz",
+)
+
+load("@rules_shell//shell:repositories.bzl", "rules_shell_dependencies", "rules_shell_toolchains")
+rules_shell_dependencies()
+rules_shell_toolchains()
+
+http_archive(
+    name = "buildifier_prebuilt",
+    sha256 = "bf9101bd5d657046674167986a18d44c5612e417194dc55aff8ca174344de031",
+    strip_prefix = "buildifier-prebuilt-8.0.3",
+    urls = [
+        "http://github.com/keith/buildifier-prebuilt/archive/8.0.3.tar.gz",
+    ],
+)
+
+load("@buildifier_prebuilt//:deps.bzl", "buildifier_prebuilt_deps")
+
+buildifier_prebuilt_deps()
+
+load("@buildifier_prebuilt//:defs.bzl", "buildifier_prebuilt_register_toolchains")
+
+buildifier_prebuilt_register_toolchains()
+
+http_archive(
+    name = "com_google_protobuf",
+    strip_prefix = "protobuf-29.3",
+    sha256 = "PTKUDpdcStm4umlkDnj1UnB1uuM8ookCdb8muFPAliw=",
+    urls = [
+            "https://github.com/protocolbuffers/protobuf/releases/download/v29.3/protobuf-29.3.tar.gz",
+        ],
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
+http_archive(
+    name = "rules_proto",
+    sha256 = "14a225870ab4e91869652cfd69ef2028277fc1dc4910d65d353b62d6e0ae21f4",
+    strip_prefix = "rules_proto-7.1.0",
+    url = "https://github.com/bazelbuild/rules_proto/releases/download/7.1.0/rules_proto-7.1.0.tar.gz",
+)
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
+rules_proto_dependencies()
+
+load("@rules_proto//proto:toolchains.bzl", "rules_proto_toolchains")
+rules_proto_toolchains()
+
 http_archive(
     name = "io_bazel_rules_go",
-    sha256 = "08c3cd71857d58af3cda759112437d9e63339ac9c6e0042add43f4d94caf632d",
+    sha256 = "f2d15bea3e241aa0e3a90fb17a82e6a8ab12214789f6aeddd53b8d04316d2b7c",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.24.2/rules_go-v0.24.2.tar.gz",
-        "https://github.com/bazelbuild/rules_go/releases/download/v0.24.2/rules_go-v0.24.2.tar.gz",
+        "https://mirror.bazel.build/github.com/bazel-contrib/rules_go/releases/download/v0.54.0/rules_go-v0.54.0.zip",
+        "https://github.com/bazel-contrib/rules_go/releases/download/v0.54.0/rules_go-v0.54.0.zip",
     ],
 )
 
@@ -81,33 +162,6 @@ go_rules_dependencies()
 
 go_register_toolchains()
 
-# multirun is written in Go and hence needs rules_go to be built.
-# See https://github.com/bazelbuild/rules_go for the up to date setup instructions.
-git_repository(
-    name = "com_github_atlassian_bazel_tools",
-    commit = "a8706cd7b818c8f55e9304745693e874c64e4cb1",
-    remote = "https://github.com/atlassian/bazel-tools.git",
-)
-load("@com_github_atlassian_bazel_tools//multirun:deps.bzl", "multirun_dependencies")
-multirun_dependencies()
-
-
-# THESE ARE DEPRECATED
-# the build ruls for git repo are kept under the /external directory
-new_git_repository(
-    name = "pyhive",
-    build_file = "BUILD.pyhive",
-    commit = "101f0e67e9c4feea10478295d9b5f4fa70600fac",
-    remote = "https://github.com/6si/PyHive.git",
-)
-
-http_archive(
-    name = "io_bazel_rules_docker",
-    sha256 = "4349f2b0b45c860dd2ffe18802e9f79183806af93ce5921fb12cbd6c07ab69a8",
-    strip_prefix = "rules_docker-0.21.0",
-    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.21.0/rules_docker-v0.21.0.tar.gz"],
-)
-
 # we need to load both new and old rules_nodejs as the old one is incompatible with rules_js, and new one is incompatible with cubejs
 http_archive(
     name = "rules_nodejs",
@@ -115,13 +169,13 @@ http_archive(
     strip_prefix = "rules_nodejs-6.3.4",
     url = "https://github.com/bazel-contrib/rules_nodejs/releases/download/v6.3.4/rules_nodejs-v6.3.4.tar.gz",
 )
-http_archive(
-    name = "build_bazel_rules_nodejs",
-    sha256 = "e79c08a488cc5ac40981987d862c7320cee8741122a2649e9b08e850b6f20442",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.8.0/rules_nodejs-3.8.0.tar.gz"],
-)
+# http_archive(
+#     name = "build_bazel_rules_nodejs",
+#     sha256 = "e79c08a488cc5ac40981987d862c7320cee8741122a2649e9b08e850b6f20442",
+#     urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.8.0/rules_nodejs-3.8.0.tar.gz"],
+# )
 
-# rules_js (dependencies: https://registry.build/github/aspect-build/rules_ts/)
+# # rules_js (dependencies: https://registry.build/github/aspect-build/rules_ts/)
 http_archive(
     name = "aspect_rules_js",
     sha256 = "1be1a3ec3d3baec4a71bc09ce446eb59bb48ae31af63016481df1532a0d81aee",
@@ -136,7 +190,7 @@ http_archive(
 )
 load("@aspect_rules_ts//ts:repositories.bzl", "rules_ts_dependencies")
 rules_ts_dependencies(
-    ts_version_from = "//sixsense-js/packages/rbac:package.json",
+    ts_version_from = "//:package.json",
 )
 
 load("@aspect_rules_js//js:repositories.bzl", "rules_js_dependencies")
@@ -148,43 +202,7 @@ load("@aspect_rules_js//npm:repositories.bzl", "npm_translate_lock")
 rules_js_register_toolchains()
 npm_translate_lock(
     name = "npm",
-    pnpm_lock = "//sixsense-js/packages/rbac:pnpm-lock.yaml",
+    pnpm_lock = "//:pnpm-lock.yaml",
 )
 load("@npm//:repositories.bzl", "npm_repositories")
 npm_repositories()
-
-load("@build_bazel_rules_nodejs//:index.bzl", "yarn_install", "node_repositories")
-node_repositories(
-    package_json = ["//services/cubejs:package.json"],
-    node_version = "20.18.0",
-    node_repositories = {
-        "20.18.0-darwin_amd64": ("node-v20.18.0-darwin-x64.tar.gz", "node-v20.18.0-darwin-x64", "c02aa7560612a4e2cc359fd89fae7aedde370c06db621f2040a4a9f830a125dc"),
-        "20.18.0-linux_amd64": ("node-v20.18.0-linux-x64.tar.xz", "node-v20.18.0-linux-x64", "4543670b589593f8fa5f106111fd5139081da42bb165a9239f05195e405f240a"),
-        "20.18.0-windows_amd64": ("node-v20.18.0-win-x64.zip", "node-v20.18.0-win-x64", "f5cea43414cc33024bbe5867f208d1c9c915d6a38e92abeee07ed9e563662297"),
-    },
-    node_urls = ["https://nodejs.org/dist/v{version}/{filename}"],
-)
-
-load(
-    "@io_bazel_rules_docker//repositories:repositories.bzl",
-    container_repositories = "repositories",
-)
-container_repositories()
-
-load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
-container_deps()
-
-http_archive(
-    name = "rules_proto",
-    sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
-    strip_prefix = "rules_proto-97d8af4dc474595af3900dd85cb3a29ad28cc313",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz",
-        "https://github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz",
-    ],
-)
-
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-
-rules_proto_dependencies()
-rules_proto_toolchains()
