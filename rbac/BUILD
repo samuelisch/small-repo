@@ -1,29 +1,49 @@
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
-load("@aspect_rules_js//js:defs.bzl", "js_library")
-load("@npm//:defs.bzl", "npm_link_all_packages")
+# load("@aspect_rules_js//js:defs.bzl", "js_library")
 
-npm_link_all_packages(name = "node_modules")
+# npm_link_all_packages(name = "node_modules")
 
 ts_project(
     name = "tsc",
-    srcs = [
-        "src/utils.ts", 
-    ],
+    srcs = glob([
+        "src/**",
+        "tsconfig.json",
+    ]),
     declaration = True,
     validate = False,
     transpiler = 'tsc',
     tsconfig = "tsconfig.json",
     out_dir = "lib",
-    deps = [":node_modules"],
 )
 
-js_library(
-    name = "rbac",
-    srcs = ["package.json"],
-    visibility = ["//visibility:public"],
-    deps = [":tsc"],
+genrule(
+    name = "debug-tsc",
+    srcs = glob([
+        "src/**",
+        "tsconfig.json",
+    ]),
+    outs = ["debug.txt"],
+    # This command runs inside the sandbox CWD (execroot/small-repo)
+    cmd = """
+        echo "--- Current Directory: $$(pwd) ---" > $@
+        echo "\n--- Listing CWD Contents ---" >> $@
+        ls -la >> $@
+        echo "\n--- Listing ./rbac/ ---" >> $@
+        ls -la ./rbac >> $@ || echo "*** ./rbac/ directory not found ***" >> $@
+        echo "\n--- Listing ./rbac/tsconfig.json ---" >> $@
+        ls -la ./rbac/tsconfig.json >> $@ || echo "*** ./rbac/tsconfig.json not found ***" >> $@
+        echo "\n--- Done ---" >> $@
+    """,
 )
 
+# js_library(
+#     name = "rbac",
+#     srcs = ["package.json"],
+#     visibility = ["//visibility:public"],
+#     deps = [":tsc"],
+# )
+
+# OLD RULES DONT TOUCH
 # filegroup(
 #     name = "javascript",
 #     srcs = glob(
